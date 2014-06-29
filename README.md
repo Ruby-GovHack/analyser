@@ -28,7 +28,7 @@ Port 5556 in the container is mapped to port 5556 on the host machine so you can
 #### Persistance
 
 * Changes made to the files in the `/code` directory in the Docker container will be reflected in the `./code` directory outside the Docker container (and vice versa).
-* Changes made to the MongoDB database (``) will be saved to `./docker/${ENV}/db`.
+* Changes made to the MongoDB database (`/var/lib/mongodb`) will be saved to `./docker/${ENV}/db`.
 * Any other file changes made inside the Docker container will be lost upon exiting the container.
 
 ## Prod
