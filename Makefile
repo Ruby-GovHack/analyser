@@ -33,7 +33,7 @@ build-prod-nocache:
 	rm "${BUILD_DIR}/Dockerfile"
 
 serve:
-	docker run -d --name="${CONTAINER_NAME_PROD}" --hostname="${CONTAINER_NAME_PROD}" -v "${BUILD_DIR}/docker/prod/mongodb:/var/lib/mongodb" -p 5556:5556 ${IMAGE_NAME_PROD}
+	docker run -d --name="${CONTAINER_NAME_PROD}" --hostname="${CONTAINER_NAME_PROD}" -v "${BUILD_DIR}/docker/prod/mongodb:/var/lib/mongodb" -p 80:5556 ${IMAGE_NAME_PROD}
 
 ssh:
 	ssh -i "${BUILD_DIR}/docker/prod/${CONTAINER_NAME_PROD}.key" root@$(shell docker inspect --format="{{ .NetworkSettings.IPAddress }}" ${CONTAINER_NAME_PROD})
