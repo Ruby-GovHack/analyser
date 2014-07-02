@@ -1,4 +1,4 @@
-Back-End + DB Stack: An opinionated starting point for a Ruby/Sinatra back end web app with a document DB
+RubyGovHackers API
 ============================
 
 The Stack
