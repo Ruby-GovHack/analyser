@@ -4,20 +4,21 @@ RubyGovHackers API
 The API
 -------
 ```
-GET <root>/<version>/<frequency>/<dataset>/<vars>?<bounding box params>&<bounding time params>  
+GET <root>/<version>/<resource>/[<subresource>/]<dataset>?[<vars>]&[<geo params>]&[<time params>] 
 ```
 Where:
 
 * ```<root> = localhost:5556 (locally) or api.rubygovhackers.org (production)                                      ``` 
-* ```<frequency> = daily | monthly | yearly  ```
-* ```<dataset> = acorn-sat  ```
 * ```<version> = V1  ```
-* ```<vars> = any combination of min-temp+max-temp+mean-temp  ```
-* ```<bounding box params> = <box> | <site>  ```
-* ```<box> = north=<lat>&east=<long>&south=<lat>&west=<long>  ```
+* ```<resource> = sites | timeseries  ```
+* ```<subresource> = monthly  (daily and yearly to be added)```
+* ```<dataset> = acorn-sat  (any geocoded timeseries datasource could be added)```
+* ```<vars> = max-temp (other vars such as min-temp, rainfall, max-temp-std-dev etc to be added) ```
+* ```<geo params> = <bounding box> | <site>  ```
+* ```<bounding box> = north=<lat>&east=<long>&south=<lat>&west=<long>  ```
 * ```<site> = site-id=<site id>  ```
-* ```<bounding time params> = start=<time>&end=<time> | time=<time>  ```
-* ```<time> = dd-mm-yyyy (if <frequency>=daily) | mm-yyyy (if <frequency>=monthly | yyyy (if <frequency>=yearly  ```
+* ```<time params> = start=<time>&end=<time> | time=<time>  ```
+* ```<time> = [[dd-]mm-]yyyy  ```
 
 The Stack
 -------

@@ -17,20 +17,20 @@ class App < Sinatra::Application
     markdown readme, fenced_code_blocks: true, autolink: true
   end
 
-  get '/v1/acorn-sat/sites' do
+  get '/v1/sites/acorn-sat' do
     cors_headers
 
     Site.fetch.to_json
   end
 
-  get '/v1/monthly/acorn-sat/max-temp' do
+  get '/v1/timeseries/monthly/acorn-sat' do
     cors_headers
 
     '[
-        {"id": "069018", "max":20.02, "std-dev": 5.11 },
-        {"id": "070351", "max":18.48, "std-dev": 3.95 },
-        {"id": "072150", "max":20.32, "std-dev": 3.95 },
-        {"id": "072161", "max":9.61, "std-dev": 3.62 }
+        {"id": "069018", "max-temp":20.02, "max-temp-std-dev": 5.11 },
+        {"id": "070351", "max-temp":18.48, "max-temp-std-dev": 3.95 },
+        {"id": "072150", "max-temp":20.32, "max-temp-std-dev": 3.95 },
+        {"id": "072161", "max-temp":9.61, "max-temp-std-dev": 3.62 }
     ]'
   end
 
