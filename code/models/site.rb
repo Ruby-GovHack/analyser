@@ -44,13 +44,15 @@ class Site
     ]
     query = sparql.select(:site, :lat, :long, :label).distinct.where(*patterns)
 
-    query.each_solution.map do |solution|
-      Site.create_from_solution!(solution)
+    sites = {}
+    query.each_solution.each do |solution|
+      sites[id_from_uri(solution[:site])] = Site.create_from_solution!(solution)
     end
+    sites
   end
 
   def as_json(options={})
-    {:site_id => site_id, :label => label, :lat => lat, :long => long}
+    {:label => label, :lat => lat, :long => long}
   end
 
   def fetch(start_date, end_date)
