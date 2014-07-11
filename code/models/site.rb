@@ -1,6 +1,7 @@
 require 'rdf'
 require 'linkeddata'
 require 'sparql/client'
+require 'json'
 
 class Site
   include Mongoid::Document
@@ -46,5 +47,9 @@ class Site
     query.each_solution.map do |solution|
       Site.create_from_solution!(solution)
     end
+  end
+
+  def to_json()
+    {:site_id => site_id, :label => label, :lat => lat, :long => long}.to_json()
   end
 end
