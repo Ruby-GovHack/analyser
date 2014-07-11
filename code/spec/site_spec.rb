@@ -14,7 +14,7 @@ describe Site do
     expect(site.label).to eq("Adelaide (Kent Town)")
     expect(site.lat).to be_within(0.001).of(-34.921)
     expect(site.long).to be_within(0.001).of(138.622)
-    expect(site.to_json).to eq("{\"site_id\":\"023090\",\"label\":\"Adelaide (Kent Town)\",\"lat\":-34.921,\"long\":138.622}")
+    expect(site.to_json).to eq("{\"label\":\"Adelaide (Kent Town)\",\"lat\":-34.921,\"long\":138.622}")
   end
 
 end
