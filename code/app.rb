@@ -4,7 +4,6 @@ require 'sinatra/reloader' if development?
 require 'mongoid'
 require 'haml'
 require 'redcarpet'
-require_relative 'models/example_model'
 require_relative 'models/site'
 
 class App < Sinatra::Application
