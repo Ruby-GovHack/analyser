@@ -4,7 +4,7 @@ require_relative '../models/example_model'
 describe 'Home' do
   it "displays the README" do
     get "/"
-    expect(last_response.body).to include("Back-End + DB Stack")
+    expect(last_response.body).to include("RubyGovHackers API")
   end
 
 end

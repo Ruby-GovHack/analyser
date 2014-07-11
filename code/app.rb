@@ -26,6 +26,15 @@ class App < Sinatra::Application
     ]'
   end
 
+  get '/monthly/acorn-sat/v1/max-temp' do
+    '[
+        {"id": "069018", "max":20.02, "std-dev": 5.11 },
+        {"id": "070351", "max":18.48, "std-dev": 3.95 },
+        {"id": "072150", "max":20.32, "std-dev": 3.95 },
+        {"id": "072161", "max":9.61, "std-dev": 3.62 }
+    ]'
+  end
+
   get '/examples' do
     content_type :json
     ExampleModel.all.to_json
