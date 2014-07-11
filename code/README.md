@@ -4,7 +4,7 @@ RubyGovHackers API
 The API
 -------
 ```
-GET <root>/<frequency>/<dataset>/<version>/<vars>?<bounding box params>&<bounding time params>  
+GET <root>/<version>/<frequency>/<dataset>/<vars>?<bounding box params>&<bounding time params>  
 ```
 Where:
 

@@ -18,13 +18,13 @@ class App < Sinatra::Application
     markdown readme, fenced_code_blocks: true, autolink: true
   end
 
-  get '/acorn-sat/v1/sites' do
+  get '/v1/acorn-sat/sites' do
     cors_headers
 
     Site.fetch.to_json
   end
 
-  get '/monthly/acorn-sat/v1/max-temp' do
+  get '/v1/monthly/acorn-sat/max-temp' do
     cors_headers
 
     '[
@@ -33,11 +33,6 @@ class App < Sinatra::Application
         {"id": "072150", "max":20.32, "std-dev": 3.95 },
         {"id": "072161", "max":9.61, "std-dev": 3.62 }
     ]'
-  end
-
-  get '/examples' do
-    content_type :json
-    ExampleModel.all.to_json
   end
 
   # FIXME replace with rack-cors
