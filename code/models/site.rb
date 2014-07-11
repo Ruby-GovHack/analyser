@@ -49,7 +49,11 @@ class Site
     end
   end
 
-  def to_json()
-    {:site_id => site_id, :label => label, :lat => lat, :long => long}.to_json()
+  def as_json(options={})
+    {:site_id => site_id, :label => label, :lat => lat, :long => long}
+  end
+
+  def fetch(start_date, end_date)
+
   end
 end

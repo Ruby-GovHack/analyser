@@ -11,6 +11,7 @@ describe Site do
 
   it 'should fetch sites from the SPARQL endpoint' do
     sites = Site.fetch
+    #print sites.to_json
     expect(sites.size).to be(112)
     expect(sites.first.site_id).to eq("023090")
     expect(sites.first.label).to eq("Adelaide (Kent Town)")

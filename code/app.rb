@@ -5,6 +5,7 @@ require 'mongoid'
 require 'haml'
 require 'redcarpet'
 require_relative 'models/example_model'
+require_relative 'models/site'
 
 class App < Sinatra::Application
 
@@ -20,12 +21,7 @@ class App < Sinatra::Application
   get '/acorn-sat/v1/sites' do
     cors_headers
 
-    '[
-        {"id": "069018", "site": "Moruya Heads", "lat": -35.909, "long": 150.153 },
-        {"id": "070351", "site": "Canberra", "lat": -35.309, "long": 149.2 },
-        {"id": "072150", "site": "Wagga Wagga", "lat": -35.158, "long": 147.457 },
-        {"id": "072161", "site": "Cabramurra", "lat": -35.937, "long": 148.378 }
-    ]'
+    Site.fetch.to_json
   end
 
   get '/monthly/acorn-sat/v1/max-temp' do
