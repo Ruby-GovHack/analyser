@@ -1,6 +1,24 @@
 RubyGovHackers API
 ============================
 
+The API
+-------
+```
+GET <root>/<frequency>/<dataset>/<version>/<vars>?<bounding box params>&<bounding time params>  
+```
+Where:
+
+* ```<root> = localhost:5556 (locally) or api.rubygovhackers.org (production)                                      ``` 
+* ```<frequency> = daily | monthly | yearly  ```
+* ```<dataset> = acorn-sat  ```
+* ```<version> = V1  ```
+* ```<vars> = any combination of min-temp+max-temp+mean-temp  ```
+* ```<bounding box params> = <box> | <site>  ```
+* ```<box> = north=<lat>&east=<long>&south=<lat>&west=<long>  ```
+* ```<site> = site-id=<site id>  ```
+* ```<bounding time params> = start=<time>&end=<time> | time=<time>  ```
+* ```<time> = dd-mm-yyyy (if <frequency>=daily) | mm-yyyy (if <frequency>=monthly | yyyy (if <frequency>=yearly  ```
+
 The Stack
 -------
 
