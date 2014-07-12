@@ -2,8 +2,8 @@ class DataAnalyser
 
   YEARSLOOKBACK = 9
 
-  def self.fetch(provider, start_month=nil, end_month=nil, north=nil, east=nil, south=nil, west=nil)
-    fetch_monthly_data(provider, start_month, end_month, north, east, south, west)
+  def self.fetch(provider, number, start_month=nil, end_month=nil, north=nil, east=nil, south=nil, west=nil)
+    return fetch_monthly_data(provider, number, start_month, end_month, north, east, south, west)
   end
 
   def self.in_date_range(month, year, start_time, end_time)
@@ -14,7 +14,7 @@ class DataAnalyser
         (year != end_year || month <= end_month)
   end
 
-  def self.fetch_monthly_data(provider, start_month=nil, end_month=nil, north=nil, east=nil, south=nil, west=nil)
+  def self.fetch_monthly_data(provider, number, start_month=nil, end_month=nil, north=nil, east=nil, south=nil, west=nil)
     monthlyData = {}
     unless north.nil?
       sites = Site.all_as_hash.select { |site_id, site| site.in_bounding_box(north, east, south, west) }
@@ -22,6 +22,7 @@ class DataAnalyser
       sites = Site.all_as_hash
     end
 
+    sites_fetched = 0
     sites.each do |site_id, site|
       next unless MonthlyData.where(:site => site).empty?
       start_month ||= '00-0000'
@@ -92,9 +93,38 @@ class DataAnalyser
           end
         end
 
+
+        monthly_max_stats[:highestsince] = nil
+        monthly_max_stats[:lowestsince] = nil
+        monthly_max_stats[:rollmax] = nil
+        monthly_max_stats[:rollmin] = nil
+        monthly_max_means = nil
+        monthly_min_stats[:highestsince] = nil
+        monthly_min_stats[:lowestsince] = nil
+        monthly_min_stats[:rollmax] = nil
+        monthly_min_stats[:rollmin] = nil
+        monthly_min_means = nil
+
+        max_result[month] = nil
+        min_result[month] = nil
+
       end
+
+      max_result = nil
+      min_result = nil
+
       puts "#{site_id} has been completed!"
+
+      # If we've fetched enough sites, invoke garbage collector to clean
+      # This avoids a crash on lower memory servers.
+      sites_fetched += 1
+
+      if sites_fetched >= number
+        return true
+      end
     end
+
+    return false
   end
 
   def self.id_from_uri(site_uri)
