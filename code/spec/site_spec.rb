@@ -10,15 +10,14 @@ describe Site do
 
   before(:each) do
     @provider = double(DataProvider,
-                       fetch: [{:site => 'bla/023090', :label =>  'Adelaide (Kent Town)', :lat => double(value:-34.921), :long => double(value:138.622)}],
+                       fetch: [{:site => 'bla/023090', :label => 'Adelaide (Kent Town)',
+                                :lat => double(value: -34.921), :long => double(value: 138.622)}],
                        site_uri: 'http://lab.environment.data.gov.au/def/acorn/site/Site'
     )
   end
 
   it 'should fetch sites from the SPARQL endpoint' do
-    print "\n"
     sites = Site.fetch(@provider)
-    print "\n"
     #print sites.to_json
     _, site = sites.first
     expect(sites.size).to be(1)
