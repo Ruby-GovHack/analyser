@@ -37,10 +37,11 @@ class App < Sinatra::Application
 
   get '/v1/timeseries/monthly/:dataset' do
     cors_headers
-
-    return data_by_site(params[:site], get_start, get_end) if params[:site]
-    return data_by_bounding_box(params[:north], params[:east], params[:south], params[:west], get_start, get_end) if params[:north]
-    data_for_all_locations
+    start_time = get_start
+    end_time = get_end
+    return data_by_site(params[:site], start_time, end_time) if params[:site]
+    return data_by_bounding_box(params[:north], params[:east], params[:south], params[:west], start_time, end_time) if params[:north]
+    data_for_all_locations(start_time, end_time)
   end
 
   def data_by_site(site_id, start_time, end_time)
@@ -55,8 +56,11 @@ class App < Sinatra::Application
     result.to_json
   end
 
-  def data_for_all_locations()
-
+  def data_for_all_locations(start_time, end_time)
+    provider = SparqlDataProvider.new(params[:dataset])
+    result = {}
+    Site.all.each {|site,_| result[site.site_id] = MonthlyData.filter_all(site, start_time, end_time)}
+    result.to_json
   end
 
   # FIXME replace with rack-cors

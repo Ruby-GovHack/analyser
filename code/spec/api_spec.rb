@@ -14,10 +14,20 @@ describe 'API' do
     expect(last_response.body).to include("069018")
   end
 
-  it 'should return data for a specified month and geographic area"' do
-    get '/v1/timeseries/monthly/acorn-sat?max-temp=true&max-temp-std-dev=true&time=09-2008&north=-35.0&east=150.5&south=-36.0&west=147.2'
+  it 'should return data for a specified month' do
+    get '/v1/timeseries/monthly/acorn-sat?max-temp=true&max-temp-std-dev=true&time=09-2008'
     expect(last_response.body).to include('"069018":[{"month":"09-2008","high_max_temp":29.2}]')
     expect(last_response.body).to include('"070351":[{"month":"09-2008","high_max_temp":25.9}]')
+    expect(last_response.body).to include('"072161":[{"month":"09-2008","high_max_temp":17.5}]')
+    expect(last_response.body).to include('"072150":[{"month":"09-2008","high_max_temp":29.0}]')
+  end
+
+  it 'should restrict data by geographic area"' do
+    get '/v1/timeseries/monthly/acorn-sat?max-temp=true&max-temp-std-dev=true&time=09-2008&north=-35.0&east=150.0&south=-36.0&west=147.2'
+    expect(last_response.body).not_to include('"069018":[{"month":"09-2008","high_max_temp":29.2}]')
+    expect(last_response.body).to include('"070351":[{"month":"09-2008","high_max_temp":25.9}]')
+    expect(last_response.body).to include('"072161":[{"month":"09-2008","high_max_temp":17.5}]')
+    expect(last_response.body).to include('"072150":[{"month":"09-2008","high_max_temp":29.0}]')
   end
 
   context 'start time and end time specified' do
