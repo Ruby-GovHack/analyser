@@ -29,17 +29,27 @@ class App < Sinatra::Application
     Site.fetch(provider).to_json
   end
 
+  def get_start
+    return params[:time] if params[:time]
+    params[:start]
+  end
+
+  def get_end
+    return params[:time] if params[:time]
+    params[:end]
+  end
+
   get '/v1/timeseries/monthly/:dataset' do
     cors_headers
 
-    return data_by_site(params[:site]) if params[:site]
+    return data_by_site(params[:site], get_start, get_end) if params[:site]
     return data_by_bounding_box(params[:north], params[:east], params[:south], params[:west]) if params[:north]
     data_for_all_locations
   end
 
-  def data_by_site(site)
+  def data_by_site(site, start_time, end_time)
     provider = DataProvider.new(provider_details(params[:dataset]))
-    MonthlyData.fetch(provider, site).to_json
+    MonthlyData.fetch(provider, site, start_time, end_time).to_json
   end
 
   def provider_details(dataset)

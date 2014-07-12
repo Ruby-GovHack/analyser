@@ -20,13 +20,33 @@ describe 'API' do
     expect(last_response.body).to include('{"id": "070351", "max-temp":18.48, "max-temp-std-dev": 3.95 }')
   end
 
-  it 'should return monthly time-series data for a site' do
-    get '/v1/timeseries/monthly/acorn-sat?max-temp=true&start=08-2008&end=11-2008&site=072161'
-    expect(last_response.body).to include('{"month":"08-2008","high_max_temp":8.2}')
-    expect(last_response.body).to include('{"month":"09-2008","high_max_temp":17.5}')
-    expect(last_response.body).to include('{"month":"10-2008","high_max_temp":20.5}')
-    expect(last_response.body).to include('{"month":"11-2008","high_max_temp":21.4}')
-    expect(last_response.body).not_to include('"month":"12-2008"')
+  context 'start time and end time specified' do
+    it 'should return monthly time-series data for a site' do
+      get '/v1/timeseries/monthly/acorn-sat?max-temp=true&start=08-2008&end=11-2008&site=072161'
+      expect(last_response.body).to include('{"month":"08-2008","high_max_temp":8.2}')
+      expect(last_response.body).to include('{"month":"09-2008","high_max_temp":17.5}')
+      expect(last_response.body).to include('{"month":"10-2008","high_max_temp":20.5}')
+      expect(last_response.body).to include('{"month":"11-2008","high_max_temp":21.4}')
+      expect(last_response.body).not_to include('"month":"12-2008"')
+      expect(last_response.body).not_to include('"month":"07-2008"')
+    end
+  end
+
+  context 'a single time is specified' do
+    it 'should return monthly time-series data for a site' do
+      get '/v1/timeseries/monthly/acorn-sat?max-temp=true&time=08-2008&site=072161'
+      expect(last_response.body).to include('{"month":"08-2008","high_max_temp":8.2}')
+      expect(last_response.body).not_to include('"month":"09-2008"')
+      expect(last_response.body).not_to include('"month":"07-2008"')
+    end
+  end
+
+  context 'time is not specified' do
+    it 'should return all months for a site' do
+      get '/v1/timeseries/monthly/acorn-sat?max-temp=true&site=072161'
+      expect(last_response.body).to include('{"month":"01-1962","high_max_temp":24.6}')
+      expect(last_response.body).to include('{"month":"12-2011","high_max_temp":21.9}')
+    end
   end
 
 end
