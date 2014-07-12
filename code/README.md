@@ -13,7 +13,7 @@ Where:
 * ```<resource> = sites | timeseries  ```
 * ```<subresource> = monthly  (daily and yearly to be added)```
 * ```<dataset> = acorn-sat  (any geocoded timeseries datasource could be added)```
-* ```<vars> = max-temp=true (other vars such as min-temp, rainfall, max-temp-std-dev etc to be added) ```
+* ```<vars> = high_max_temp=true (other vars such as low_min_temp, rainfall, max-temp-std-dev etc to be added) ```
 * ```<geo params> = <bounding box> | <site>  ```
 * ```<bounding box> = north=<lat>&east=<long>&south=<lat>&west=<long>  ```
 * ```<site> = site-id=<site id>  ```

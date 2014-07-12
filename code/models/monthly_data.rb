@@ -5,7 +5,7 @@ class MonthlyData
 
   field :year, type: Integer
   field :month, type: Integer
-  field :max_temp, type: Integer
+  field :high_max_temp, type: Float
   has_one :site
   index({ site: 1, year: 1, month: 1 }, { unique: true })
 
@@ -13,7 +13,7 @@ class MonthlyData
     MonthlyData.create!(
         year: id_from_uri(solution[:year]),
         month: id_from_uri(solution[:month]),
-        max_temp: solution[:max].to_i)
+        high_max_temp: solution[:max].to_f)
   end
 
   def self.label_from_variable(label_variable)
@@ -52,7 +52,7 @@ class MonthlyData
 
 
   def as_json(options={})
-    {:month => month + '-' + year, :max_temp => max_temp}
+    {:month => sprintf("%02d", month) + "-#{year}", :high_max_temp => high_max_temp}
   end
 
 end

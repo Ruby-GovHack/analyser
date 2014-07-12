@@ -5,6 +5,7 @@ require 'mongoid'
 require 'haml'
 require 'redcarpet'
 require_relative 'models/site'
+require_relative 'models/monthly_data'
 require_relative 'models/data_provider'
 
 class App < Sinatra::Application
