@@ -3,13 +3,12 @@ class DataAnalyser
   YEARSLOOKBACK = 9
 
   def self.fetch(provider, start_month=nil, end_month=nil, north=nil, east=nil, south=nil, west=nil)
-    sites = Site.all_as_hash
     fetch_monthly_data(provider, start_month, end_month, north, east, south, west)
   end
 
   def self.in_date_range(month, year, start_time, end_time)
-    start_month, start_year = start_time.split('-').map {|a| a.to_i}
-    end_month,   end_year =   end_time.split('-').map {|a| a.to_i}
+    start_month, start_year = start_time.split('-').map { |a| a.to_i }
+    end_month, end_year = end_time.split('-').map { |a| a.to_i }
     (year >= start_year) && (year <= end_year) &&
         (year != start_year || month >= start_month) &&
         (year != end_year || month <= end_month)
@@ -18,32 +17,33 @@ class DataAnalyser
   def self.fetch_monthly_data(provider, start_month=nil, end_month=nil, north=nil, east=nil, south=nil, west=nil)
     monthlyData = {}
     unless north.nil?
-      sites = Site.all_as_hash.select {|site_id, site| site.in_bounding_box(north, east, south, west)}
+      sites = Site.all_as_hash.select { |site_id, site| site.in_bounding_box(north, east, south, west) }
     else
       sites = Site.all_as_hash
     end
 
     sites.each do |site_id, site|
+      next unless MonthlyData.where(:site => site).empty?
       start_month ||= '00-0000'
       end_month ||= '99-999999'
       time_series = 'http://lab.environment.data.gov.au/def/acorn/time-series/'
-      acorn_sat   = 'http://lab.environment.data.gov.au/def/acorn/sat/'
+      acorn_sat = 'http://lab.environment.data.gov.au/def/acorn/sat/'
 
       max_temp = RDF::URI(time_series + 'maxTemperatureMax')
       min_temp = RDF::URI(time_series + 'minTemperatureMin')
-      station  = RDF::URI('http://lab.environment.data.gov.au/data/acorn/climate/slice/station/' + site_id)
+      station = RDF::URI('http://lab.environment.data.gov.au/data/acorn/climate/slice/station/' + site_id)
       subslice = RDF::URI('http://purl.org/linked-data/cube#subSlice')
-      acorn_year  = RDF::URI(acorn_sat + 'year')
+      acorn_year = RDF::URI(acorn_sat + 'year')
       acorn_month = RDF::URI(acorn_sat + 'month')
 
       vars = [:max, :min, :year, :month]
       patterns = [
-          [station,    subslice,   :sliceyear],
-          [:sliceyear, subslice,   :yearmonth],
+          [station, subslice, :sliceyear],
+          [:sliceyear, subslice, :yearmonth],
           [:yearmonth, acorn_year, :year],
-          [:yearmonth, acorn_month,:month],
-          [:yearmonth, max_temp,   :max],
-          [:yearmonth, min_temp,   :min]
+          [:yearmonth, acorn_month, :month],
+          [:yearmonth, max_temp, :max],
+          [:yearmonth, min_temp, :min]
       ]
 
       max_result = {}
@@ -52,11 +52,11 @@ class DataAnalyser
 
         year = id_from_uri(solution[:year]).to_i
         month = id_from_uri(solution[:month]).to_i
-          max_result[id_from_uri(solution[:month]).to_i] ||= {}
-          max_result[id_from_uri(solution[:month]).to_i][id_from_uri(solution[:year]).to_i] = solution[:max].to_f
+        max_result[id_from_uri(solution[:month]).to_i] ||= {}
+        max_result[id_from_uri(solution[:month]).to_i][id_from_uri(solution[:year]).to_i] = solution[:max].to_f
 
-          min_result[id_from_uri(solution[:month]).to_i] ||= {}
-          min_result[id_from_uri(solution[:month]).to_i][id_from_uri(solution[:year]).to_i] = solution[:min].to_f
+        min_result[id_from_uri(solution[:month]).to_i] ||= {}
+        min_result[id_from_uri(solution[:month]).to_i][id_from_uri(solution[:year]).to_i] = solution[:min].to_f
 
       end
 
@@ -75,24 +75,21 @@ class DataAnalyser
                 high_max_temp: max_result[month][year],
                 low_min_temp: min_result[month][year],
                 max_highest_since: monthly_max_stats[:highestsince][year],
-                max_lowest_since:monthly_max_stats[:lowestsince][year],
-                max_ten_max:monthly_max_stats[:rollmax][year],
-                max_ten_min:monthly_max_stats[:rollmin][year],
-                max_moving_mean:monthly_max_means[year],
+                max_lowest_since: monthly_max_stats[:lowestsince][year],
+                max_ten_max: monthly_max_stats[:rollmax][year],
+                max_ten_min: monthly_max_stats[:rollmin][year],
+                max_moving_mean: monthly_max_means[year],
                 min_highest_since: monthly_min_stats[:highestsince][year],
-                min_lowest_since:monthly_min_stats[:lowestsince][year],
-                min_ten_max:monthly_min_stats[:rollmax][year],
-                min_ten_min:monthly_min_stats[:rollmin][year],
-                min_moving_mean:monthly_min_means[year],
+                min_lowest_since: monthly_min_stats[:lowestsince][year],
+                min_ten_max: monthly_min_stats[:rollmax][year],
+                min_ten_min: monthly_min_stats[:rollmin][year],
+                min_moving_mean: monthly_min_means[year],
                 site: site
             )
           end
         end
 
       end
-      # through montly data
-      # monthly.each
-      # MonthlyData.create_from_solution!(solution, site)
       puts "#{site_id} has been completed!"
     end
   end
@@ -113,7 +110,7 @@ class DataAnalyser
       highestsince = nil
       tenmax = datapoint
 
-      while ((highestsince.nil? || key - countdownyear+1 <= YEARSLOOKBACK )&& years.include?(countdownyear-1))
+      while ((highestsince.nil? || key - countdownyear+1 <= YEARSLOOKBACK)&& years.include?(countdownyear-1))
         countdownyear = countdownyear -1
 
         if (years[countdownyear] >= datapoint && highestsince.nil?)

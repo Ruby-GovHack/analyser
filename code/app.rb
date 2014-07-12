@@ -7,6 +7,7 @@ require 'redcarpet'
 require_relative 'models/site'
 require_relative 'models/monthly_data'
 require_relative 'models/sparql_data_provider'
+require_relative 'db/seeds'
 
 class App < Sinatra::Application
 
@@ -27,6 +28,10 @@ class App < Sinatra::Application
 
   get '/debug' do
     MonthlyData.count.to_s
+  end
+
+  post '/seed' do
+    Seeds.new.seed_all
   end
 
   def get_start
