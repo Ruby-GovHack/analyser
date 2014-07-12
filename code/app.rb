@@ -10,10 +10,6 @@ require_relative 'models/data_provider'
 
 class App < Sinatra::Application
 
-  ACORN_SAT_ENDPOINT = 'http://lab.environment.data.gov.au/sparql'
-  SITE_URI = 'http://lab.environment.data.gov.au/def/acorn/site/Site'
-  SUPPORTED_DATASETS = ['acorn-sat']
-
   configure do
     Mongoid.load!("./config/mongoid.yml")
   end
@@ -25,7 +21,7 @@ class App < Sinatra::Application
 
   get '/v1/sites/:dataset' do
     cors_headers
-    provider = DataProvider.new(provider_details(params[:dataset]))
+    provider = DataProvider.new(params[:dataset])
     Site.fetch(provider).to_json
   end
 
@@ -48,16 +44,8 @@ class App < Sinatra::Application
   end
 
   def data_by_site(site, start_time, end_time)
-    provider = DataProvider.new(provider_details(params[:dataset]))
+    provider = DataProvider.new(params[:dataset])
     MonthlyData.fetch(provider, site, start_time, end_time).to_json
-  end
-
-  def provider_details(dataset)
-    throw("Unknown dataset: #{dataset}. Supported datasets are #{SUPPORTED_DATASETS}") unless SUPPORTED_DATASETS.include? dataset
-    case dataset
-      when 'acorn-sat'
-        {endpoint: ACORN_SAT_ENDPOINT, site_uri: SITE_URI}
-    end
   end
 
   def data_by_bounding_box(north, east, south, west)

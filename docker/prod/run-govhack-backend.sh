@@ -1,3 +1,3 @@
 #!/bin/bash
 
-su -l docker -c "cd /code; rackup config.ru"
+su -l docker -c "cd /code; rake db:seed; rackup config.ru"

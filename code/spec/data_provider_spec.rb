@@ -2,8 +2,7 @@ require 'rspec'
 
 describe 'Providers' do
 
-  let(:provider) {DataProvider.new({endpoint: 'http://lab.environment.data.gov.au/sparql',
-                                    site_uri: 'http://lab.environment.data.gov.au/def/acorn/site/Site'})}
+  let(:provider) {DataProvider.new('acorn-sat')}
 
   it 'should provide a sparql endpoint' do
     expect(provider.site_uri).to eq('http://lab.environment.data.gov.au/def/acorn/site/Site')
