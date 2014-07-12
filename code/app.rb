@@ -5,8 +5,10 @@ require 'mongoid'
 require 'haml'
 require 'redcarpet'
 require_relative 'models/site'
+require_relative 'models/data_provider'
 
 class App < Sinatra::Application
+
 
   configure do
     Mongoid.load!("./config/mongoid.yml")
@@ -19,8 +21,9 @@ class App < Sinatra::Application
 
   get '/v1/sites/acorn-sat' do
     cors_headers
-
-    Site.fetch.to_json
+    provider = DataProvider.new('http://lab.environment.data.gov.au/sparql',
+                                 'http://lab.environment.data.gov.au/def/acorn/site/Site')
+    Site.fetch(provider).to_json
   end
 
   get '/v1/timeseries/monthly/acorn-sat' do

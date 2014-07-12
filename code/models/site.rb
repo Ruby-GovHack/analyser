@@ -14,13 +14,13 @@ class Site
   def self.create_from_solution!(solution)
     Site.create!(
         site_id: id_from_uri(solution[:site]),
-        label: label_from_variable(solution.label),
-        lat: solution.to_hash[:lat].value.to_f,
-        long: solution.to_hash[:long].value.to_f)
+        label: label_from_variable(solution[:label]),
+        lat: solution[:lat].value.to_f,
+        long: solution[:long].value.to_f)
   end
 
   def self.label_from_variable(label_variable)
-    label_variable.value.gsub(/\w+/) do |word|
+    label_variable.to_s.gsub(/\w+/) do |word|
       word.capitalize
     end
   end
@@ -29,23 +29,20 @@ class Site
     site_uri.to_s.split('/').last
   end
 
-  def self.fetch
-    sparql = SPARQL::Client.new("http://lab.environment.data.gov.au/sparql")
-
-    site_uri = RDF::URI("http://lab.environment.data.gov.au/def/acorn/site/Site")
+  def self.fetch(provider)
     lat_uri = RDF::URI("http://www.w3.org/2003/01/geo/wgs84_pos#lat")
     long_uri = RDF::URI("http://www.w3.org/2003/01/geo/wgs84_pos#long")
     label_uri = RDF::URI("http://www.w3.org/2000/01/rdf-schema#label")
     patterns = [
-        [:site, 'a', site_uri],
+        [:site, 'a', provider.site_uri],
         [:site, lat_uri, :lat],
         [:site, long_uri, :long],
         [:site, label_uri, :label]
     ]
-    query = sparql.select(:site, :lat, :long, :label).distinct.where(*patterns)
+    results = provider.fetch([:site, :lat, :long, :label], patterns)
 
     sites = {}
-    query.each_solution.each do |solution|
+    results.each do |solution|
       sites[id_from_uri(solution[:site])] = Site.create_from_solution!(solution)
     end
     sites
