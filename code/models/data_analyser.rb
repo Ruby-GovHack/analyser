@@ -3,7 +3,7 @@ class DataAnalyser
   YEARSLOOKBACK = 9
 
   def self.fetch(provider, start_month=nil, end_month=nil, north=nil, east=nil, south=nil, west=nil)
-    sites = Site.fetch(provider)
+    sites = Site.all_as_hash
     fetch_monthly_data(provider, start_month, end_month, north, east, south, west)
   end
 
