@@ -43,7 +43,7 @@ class App < Sinatra::Application
     cors_headers
 
     return data_by_site(params[:site], get_start, get_end) if params[:site]
-    return data_by_bounding_box(params[:north], params[:east], params[:south], params[:west]) if params[:north]
+    return data_by_bounding_box(params[:north], params[:east], params[:south], params[:west], get_start, get_end) if params[:north]
     data_for_all_locations
   end
 
@@ -60,13 +60,12 @@ class App < Sinatra::Application
     end
   end
 
-  def data_by_bounding_box(north, east, south, west)
-    '[
-        {"id": "069018", "max-temp":20.02, "max-temp-std-dev": 5.11 },
-        {"id": "070351", "max-temp":18.48, "max-temp-std-dev": 3.95 },
-        {"id": "072150", "max-temp":20.32, "max-temp-std-dev": 3.95 },
-        {"id": "072161", "max-temp":9.61, "max-temp-std-dev": 3.62 }
-    ]'
+  def data_by_bounding_box(north, east, south, west, start_time, end_time)
+    provider = DataProvider.new(provider_details(params[:dataset]))
+    sites = Site.fetch(provider).select {|_,s| s.in_bounding_box(north, east, south, west)}
+    result = {}
+    sites.each {|site,_| result[site] = MonthlyData.fetch(provider, site, start_time, end_time)}
+    result.to_json
   end
 
   def data_for_all_locations()

@@ -16,8 +16,8 @@ describe 'API' do
 
   it 'should return data for a specified month and geographic area"' do
     get '/v1/timeseries/monthly/acorn-sat?max-temp=true&max-temp-std-dev=true&time=09-2008&north=-35.0&east=150.5&south=-36.0&west=147.2'
-    expect(last_response.body).to include('{"id": "069018", "max-temp":20.02, "max-temp-std-dev": 5.11 }')
-    expect(last_response.body).to include('{"id": "070351", "max-temp":18.48, "max-temp-std-dev": 3.95 }')
+    expect(last_response.body).to include('"069018":[{"month":"09-2008","high_max_temp":29.2}]')
+    expect(last_response.body).to include('"070351":[{"month":"09-2008","high_max_temp":25.9}]')
   end
 
   context 'start time and end time specified' do
