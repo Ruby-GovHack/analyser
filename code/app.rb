@@ -35,15 +35,9 @@ class App < Sinatra::Application
   end
 
   def data_by_site(site)
-    '[
-      {"month":"09-2008", "max-temp":32.83},
-      {"month":"10-2008", "max-temp":18.32},
-      {"month":"11-2008", "max-temp":25.34},
-      {"month":"12-2008", "max-temp":32.12},
-      {"month":"01-2009", "max-temp":30.45},
-      {"month":"02-2009", "max-temp":29.34},
-      {"month":"03-2009", "max-temp":32.83}
-    ]'
+    provider = DataProvider.new('http://lab.environment.data.gov.au/sparql',
+                                'http://lab.environment.data.gov.au/def/acorn/site/Site')
+    MonthlyData.fetch(provider, site).to_json
   end
 
   def data_by_bounding_box(north, east, south, west)

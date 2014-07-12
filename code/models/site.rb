@@ -52,32 +52,4 @@ class Site
     {:label => label, :lat => lat, :long => long}
   end
 
-  def fetch_monthly_maximums(provider)
-    time_series = 'http://lab.environment.data.gov.au/def/acorn/time-series/'
-    acorn_sat   = 'http://lab.environment.data.gov.au/def/acorn/sat/'
-
-    max_temp = RDF::URI(time_series + 'maxTemperatureMax')
-    station  = RDF::URI('http://lab.environment.data.gov.au/data/acorn/climate/slice/station/' + site_id)
-    subslice = RDF::URI('http://purl.org/linked-data/cube#subSlice')
-    acorn_year  = RDF::URI(acorn_sat + 'year')
-    acorn_month = RDF::URI(acorn_sat + 'month')
-
-    vars = [:max, :year, :month]
-    patterns = [
-        [station,    subslice,   :sliceyear],
-        [:sliceyear, subslice,   :yearmonth],
-        [:yearmonth, acorn_year, :year],
-        [:yearmonth, acorn_month,:month],
-        [:yearmonth, max_temp,   :max]
-    ]
-
-    results = provider.fetch(vars, patterns)
-
-    temps = {}
-    results.each do |solution|
-      temps[Site.id_from_uri(solution[:year]) + Site.id_from_uri(solution[:month])] = solution[:max].to_i
-    end
-    temps
-  end
-
 end
