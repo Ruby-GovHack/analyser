@@ -2,13 +2,26 @@ class DataAnalyser
 
   YEARSLOOKBACK = 9
 
-  def self.fetch(provider)
+  def self.fetch(provider, start_month=nil, end_month=nil, north=nil, east=nil, south=nil, west=nil)
     sites = Site.fetch(provider)
-    fetch_monthly_data(sites, provider)
+    fetch_monthly_data(provider, start_month, end_month, north, east, south, west)
   end
 
-  def self.fetch_monthly_data(sites, provider)
+  def self.in_date_range(month, year, start_time, end_time)
+    start_month, start_year = start_time.split('-').map {|a| a.to_i}
+    end_month,   end_year =   end_time.split('-').map {|a| a.to_i}
+    (year >= start_year) && (year <= end_year) &&
+        (year != start_year || month >= start_month) &&
+        (year != end_year || month <= end_month)
+  end
+
+  def self.fetch_monthly_data(provider, start_month=nil, end_month=nil, north=nil, east=nil, south=nil, west=nil)
     monthlyData = {}
+    unless north.nil?
+      sites = Site.all_as_hash.select {|site_id, site| site.in_bounding_box(north, east, south, west)}
+    else
+      sites = Site.all_as_hash
+    end
 
     sites.each do |site_id, site|
       start_month ||= '00-0000'
@@ -36,11 +49,15 @@ class DataAnalyser
       max_result = {}
       min_result = {}
       provider.fetch(vars, patterns).each do |solution|
-        max_result[id_from_uri(solution[:month]).to_i] ||= {}
-        max_result[id_from_uri(solution[:month]).to_i][id_from_uri(solution[:year]).to_i] = solution[:max].to_f
 
-        min_result[id_from_uri(solution[:month]).to_i] ||= {}
-        min_result[id_from_uri(solution[:month]).to_i][id_from_uri(solution[:year]).to_i] = solution[:min].to_f
+        year = id_from_uri(solution[:year]).to_i
+        month = id_from_uri(solution[:month]).to_i
+          max_result[id_from_uri(solution[:month]).to_i] ||= {}
+          max_result[id_from_uri(solution[:month]).to_i][id_from_uri(solution[:year]).to_i] = solution[:max].to_f
+
+          min_result[id_from_uri(solution[:month]).to_i] ||= {}
+          min_result[id_from_uri(solution[:month]).to_i][id_from_uri(solution[:year]).to_i] = solution[:min].to_f
+
       end
 
       (1..12).each do |month|
@@ -50,24 +67,26 @@ class DataAnalyser
         monthly_min_means = movingmean(min_result[month])
 
         (1910..2011).each do |year|
-          MonthlyData.create!(
-              year: year,
-              month: month,
-              year_month: year*100 + month,
-              high_max_temp: max_result[month][year],
-              low_min_temp: min_result[month][year],
-              max_highest_since: monthly_max_stats[:highestsince][year],
-              max_lowest_since:monthly_max_stats[:lowestsince][year],
-              max_ten_max:monthly_max_stats[:rollmax][year],
-              max_ten_min:monthly_max_stats[:rollmin][year],
-              max_moving_mean:monthly_max_means[year],
-              min_highest_since: monthly_min_stats[:highestsince][year],
-              min_lowest_since:monthly_min_stats[:lowestsince][year],
-              min_ten_max:monthly_min_stats[:rollmax][year],
-              min_ten_min:monthly_min_stats[:rollmin][year],
-              min_moving_mean:monthly_min_means[year],
-              site: site
-          )
+          if in_date_range(month, year, start_month, end_month) || start_month.nil?
+            MonthlyData.create!(
+                year: year,
+                month: month,
+                year_month: year*100 + month,
+                high_max_temp: max_result[month][year],
+                low_min_temp: min_result[month][year],
+                max_highest_since: monthly_max_stats[:highestsince][year],
+                max_lowest_since:monthly_max_stats[:lowestsince][year],
+                max_ten_max:monthly_max_stats[:rollmax][year],
+                max_ten_min:monthly_max_stats[:rollmin][year],
+                max_moving_mean:monthly_max_means[year],
+                min_highest_since: monthly_min_stats[:highestsince][year],
+                min_lowest_since:monthly_min_stats[:lowestsince][year],
+                min_ten_max:monthly_min_stats[:rollmax][year],
+                min_ten_min:monthly_min_stats[:rollmin][year],
+                min_moving_mean:monthly_min_means[year],
+                site: site
+            )
+          end
         end
 
       end
