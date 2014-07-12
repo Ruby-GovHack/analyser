@@ -6,7 +6,7 @@ require 'haml'
 require 'redcarpet'
 require_relative 'models/site'
 require_relative 'models/monthly_data'
-require_relative 'models/data_provider'
+require_relative 'models/sparql_data_provider'
 
 class App < Sinatra::Application
 
@@ -21,7 +21,7 @@ class App < Sinatra::Application
 
   get '/v1/sites/:dataset' do
     cors_headers
-    provider = DataProvider.new(params[:dataset])
+    provider = SparqlDataProvider.new(params[:dataset])
     Site.fetch(provider).to_json
   end
 
@@ -44,12 +44,12 @@ class App < Sinatra::Application
   end
 
   def data_by_site(site, start_time, end_time)
-    provider = DataProvider.new(params[:dataset])
+    provider = SparqlDataProvider.new(params[:dataset])
     MonthlyData.fetch(provider, site, start_time, end_time).to_json
   end
 
   def data_by_bounding_box(north, east, south, west, start_time, end_time)
-    provider = DataProvider.new(params[:dataset])
+    provider = SparqlDataProvider.new(params[:dataset])
     sites = Site.fetch(provider).select {|_,s| s.in_bounding_box(north, east, south, west)}
     result = {}
     sites.each {|site,_| result[site] = MonthlyData.fetch(provider, site, start_time, end_time)}

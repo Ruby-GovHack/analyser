@@ -2,21 +2,21 @@ require 'spec_helper'
 require 'rspec'
 require 'sparql/client'
 require_relative '../models/site'
-require_relative '../models/data_provider'
+require_relative '../models/sparql_data_provider'
 
 describe Site do
 
   let(:site) { Site.new }
 
   before(:each) do
-    @provider = double(DataProvider,
+    @provider = double(SparqlDataProvider,
                        fetch: [{:site => 'bla/023090', :label => 'Adelaide (Kent Town)',
                                 :lat => double(value: -34.921), :long => double(value: 138.622)}],
                        site_uri: 'http://lab.environment.data.gov.au/def/acorn/site/Site'
     )
   end
 
-  it 'should fetch sites from the SPARQL endpoint' do
+  it 'should fetch sites from the data provider' do
     sites = Site.fetch(@provider)
     #print sites.to_json
     _, site = sites.first

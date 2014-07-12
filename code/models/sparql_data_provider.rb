@@ -1,4 +1,4 @@
-class DataProvider
+class SparqlDataProvider
 
   ACORN_SAT_ENDPOINT = 'http://lab.environment.data.gov.au/sparql'
   SITE_URI = 'http://lab.environment.data.gov.au/def/acorn/site/Site'
