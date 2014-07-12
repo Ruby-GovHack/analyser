@@ -25,6 +25,10 @@ class App < Sinatra::Application
     Site.all_as_hash.to_json
   end
 
+  get '/debug' do
+    MonthlyData.count.to_s
+  end
+
   def get_start
     return params[:time] if params[:time]
     params[:start]
