@@ -21,14 +21,12 @@ describe 'API' do
   end
 
   it "should return monthly time-series data for a site" do
-    get "/v1/timeseries/monthly/acorn-sat?max-temp=true&start=09-2008&end=03-2009&site=072161"
+    get "/v1/timeseries/monthly/acorn-sat?max-temp=true&start=08-2008&end=11-2008&site=072161"
+    expect(last_response.body).to include('{"month":"08-2008", "max-temp":32.83}')
     expect(last_response.body).to include('{"month":"09-2008", "max-temp":32.83}')
     expect(last_response.body).to include('{"month":"10-2008", "max-temp":18.32}')
     expect(last_response.body).to include('{"month":"11-2008", "max-temp":25.34}')
-    expect(last_response.body).to include('{"month":"12-2008", "max-temp":32.12}')
-    expect(last_response.body).to include('{"month":"01-2009", "max-temp":30.45}')
-    expect(last_response.body).to include('{"month":"02-2009", "max-temp":29.34}')
-    expect(last_response.body).to include('{"month":"03-2009", "max-temp":32.83}')
+    expect(last_response.body).not_to include('"month":"12-2008"')
   end
 
 end
