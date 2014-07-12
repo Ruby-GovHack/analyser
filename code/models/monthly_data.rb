@@ -5,6 +5,7 @@ class MonthlyData
 
   field :year, type: Integer
   field :month, type: Integer
+  field :year_month, type: Integer
   field :high_max_temp, type: Float
   field :low_min_temp, type: Float
   field :max_highest_since, type: Integer
@@ -37,34 +38,16 @@ class MonthlyData
     site_uri.to_s.split('/').last
   end
 
-  def self.fetch(provider, site_id, start_month=nil, end_month=nil)
-    start_month ||= '00-0000'
-    end_month ||= '99-999999'
-    time_series = 'http://lab.environment.data.gov.au/def/acorn/time-series/'
-    acorn_sat   = 'http://lab.environment.data.gov.au/def/acorn/sat/'
-
-    max_temp = RDF::URI(time_series + 'maxTemperatureMax')
-    station  = RDF::URI('http://lab.environment.data.gov.au/data/acorn/climate/slice/station/' + site_id)
-    subslice = RDF::URI('http://purl.org/linked-data/cube#subSlice')
-    acorn_year  = RDF::URI(acorn_sat + 'year')
-    acorn_month = RDF::URI(acorn_sat + 'month')
-
-    vars = [:max, :year, :month]
-    patterns = [
-        [station,    subslice,   :sliceyear],
-        [:sliceyear, subslice,   :yearmonth],
-        [:yearmonth, acorn_year, :year],
-        [:yearmonth, acorn_month,:month],
-        [:yearmonth, max_temp,   :max]
-    ]
-
-    result = []
-    provider.fetch(vars, patterns).each do |solution|
-      year = id_from_uri(solution[:year]).to_i
-      month = id_from_uri(solution[:month]).to_i
-      result << MonthlyData.create_from_solution!(solution) if in_date_range(month, year, start_month, end_month)
-    end
-    result
+  def self.filter_all(site, start_time=nil, end_time=nil)
+    start_time ||= '00-0000'
+    end_time ||= '99-999999'
+    start_month, start_year = start_time.split('-').map {|a| a.to_i}
+    end_month,   end_year =   end_time.split('-').map {|a| a.to_i}
+    MonthlyData.where(
+        :site => site,
+        :year_month.gte => start_year*100+start_month,
+        :year_month.lte => end_year*100+end_month
+    ).to_a
   end
 
   def self.in_date_range(month, year, start_time, end_time)

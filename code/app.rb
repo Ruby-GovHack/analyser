@@ -43,16 +43,15 @@ class App < Sinatra::Application
     data_for_all_locations
   end
 
-  def data_by_site(site, start_time, end_time)
-    provider = SparqlDataProvider.new(params[:dataset])
-    MonthlyData.fetch(provider, site, start_time, end_time).to_json
+  def data_by_site(site_id, start_time, end_time)
+    site = Site.all_as_hash[site_id]
+    MonthlyData.filter_all(site, start_time, end_time).to_json
   end
 
   def data_by_bounding_box(north, east, south, west, start_time, end_time)
-    provider = SparqlDataProvider.new(params[:dataset])
     sites = Site.all.select {|s| s.in_bounding_box(north, east, south, west)}
     result = {}
-    sites.each {|site,_| result[site.site_id] = MonthlyData.fetch(provider, site.site_id, start_time, end_time)}
+    sites.each {|site,_| result[site.site_id] = MonthlyData.filter_all(site, start_time, end_time)}
     result.to_json
   end
 

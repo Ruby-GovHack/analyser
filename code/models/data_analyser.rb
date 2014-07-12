@@ -53,6 +53,7 @@ class DataAnalyser
           MonthlyData.create!(
               year: year,
               month: month,
+              year_month: year*100 + month,
               high_max_temp: max_result[month][year],
               low_min_temp: min_result[month][year],
               max_highest_since: monthly_max_stats[:highestsince][year],
