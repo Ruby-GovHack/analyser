@@ -12,18 +12,14 @@ RSpec.configure do |conf|
   conf.include Rack::Test::Methods
 
   conf.before(:suite) do
+    Mongoid.load!("./config/mongoid.yml", :test)
+
     DatabaseCleaner[:mongoid].strategy = :truncation
     DatabaseCleaner[:mongoid].clean_with(:truncation)
+    require_relative '../db/seeds'
   end
 
-  conf.before(:each) do
-    DatabaseCleaner[:mongoid].start
-  end
-
-  conf.after(:each) do
-    DatabaseCleaner[:mongoid].clean
-  end
-end
+ end
 
 def app
   App

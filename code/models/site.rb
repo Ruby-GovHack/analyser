@@ -48,6 +48,14 @@ class Site
     sites
   end
 
+  def self.all_as_hash
+    sites = {}
+    Site.all.each do |site|
+      sites[site.site_id] = site
+    end
+    sites
+  end
+
   def as_json(options={})
     {:label => label, :lat => lat, :long => long}
   end

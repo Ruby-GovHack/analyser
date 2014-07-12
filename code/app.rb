@@ -21,8 +21,8 @@ class App < Sinatra::Application
 
   get '/v1/sites/:dataset' do
     cors_headers
-    provider = SparqlDataProvider.new(params[:dataset])
-    Site.fetch(provider).to_json
+    SparqlDataProvider.validate_dataset(params[:dataset])
+    Site.all_as_hash.to_json
   end
 
   def get_start
@@ -50,9 +50,9 @@ class App < Sinatra::Application
 
   def data_by_bounding_box(north, east, south, west, start_time, end_time)
     provider = SparqlDataProvider.new(params[:dataset])
-    sites = Site.fetch(provider).select {|_,s| s.in_bounding_box(north, east, south, west)}
+    sites = Site.all.select {|s| s.in_bounding_box(north, east, south, west)}
     result = {}
-    sites.each {|site,_| result[site] = MonthlyData.fetch(provider, site, start_time, end_time)}
+    sites.each {|site,_| result[site.site_id] = MonthlyData.fetch(provider, site.site_id, start_time, end_time)}
     result.to_json
   end
 

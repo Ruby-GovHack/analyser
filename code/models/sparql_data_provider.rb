@@ -16,8 +16,12 @@ class SparqlDataProvider
     @sparql.select(*vars).distinct.where(*patterns).each_solution
   end
 
-  def provider_details(dataset)
+  def self.validate_dataset(dataset)
     throw("Unknown dataset: #{dataset}. Supported datasets are #{SUPPORTED_DATASETS}") unless SUPPORTED_DATASETS.include? dataset
+  end
+
+  def provider_details(dataset)
+    self.class.validate_dataset dataset
     case dataset
       when 'acorn-sat'
         {endpoint: ACORN_SAT_ENDPOINT, site_uri: SITE_URI}
