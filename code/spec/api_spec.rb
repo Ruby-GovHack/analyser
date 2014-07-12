@@ -44,8 +44,8 @@ describe 'API' do
   context 'time is not specified' do
     it 'should return all months for a site' do
       get '/v1/timeseries/monthly/acorn-sat?max-temp=true&site=072161'
-      expect(last_response.body).to include('{"month":"01-1962","high_max_temp":24.6}')
-      expect(last_response.body).to include('{"month":"12-2011","high_max_temp":21.9}')
+      expect(last_response.body).to include('{"month":"01-2000","high_max_temp":24.0}')
+      expect(last_response.body).to include('{"month":"12-2010","high_max_temp":25.2}')
     end
   end
 
