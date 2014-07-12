@@ -1,5 +1,20 @@
+import "#{`bundle show mongoid`.strip}/lib/mongoid/railties/database.rake"
+
 task :environment do
-  require './backendapp'
+  require './app'
+end
+
+namespace :db do
+  desc "Drop db data"
+  task :drop => :environment do
+    Site.destroy_all
+    MonthlyData.destroy_all
+  end
+
+  desc "Seed db data"
+  task :seed => :environment do
+    require_relative 'db/seeds'
+  end
 end
 
 desc "Run those specs"
