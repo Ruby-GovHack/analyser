@@ -48,16 +48,19 @@ class DataAnalyser
 
       max_result = {}
       min_result = {}
+      years = {}
       provider.fetch(vars, patterns).each do |solution|
 
-        year = id_from_uri(solution[:year]).to_i
+
+        year  = id_from_uri(solution[:year]).to_i
         month = id_from_uri(solution[:month]).to_i
-          max_result[id_from_uri(solution[:month]).to_i] ||= {}
-          max_result[id_from_uri(solution[:month]).to_i][id_from_uri(solution[:year]).to_i] = solution[:max].to_f
+        max_result[month] ||= {}
+        max_result[month][year] = solution[:max].to_f
 
-          min_result[id_from_uri(solution[:month]).to_i] ||= {}
-          min_result[id_from_uri(solution[:month]).to_i][id_from_uri(solution[:year]).to_i] = solution[:min].to_f
+        min_result[month] ||= {}
+        min_result[month][year] = solution[:min].to_f
 
+        years[year] = 1
       end
 
       (1..12).each do |month|
@@ -66,7 +69,7 @@ class DataAnalyser
         monthly_min_stats = statistics(min_result[month])
         monthly_min_means = movingmean(min_result[month])
 
-        (1910..2011).each do |year|
+        years.keys.each do |year|
           if in_date_range(month, year, start_month, end_month) || start_month.nil?
             MonthlyData.create!(
                 year: year,
