@@ -52,4 +52,9 @@ class Site
     {:label => label, :lat => lat, :long => long}
   end
 
+  def in_bounding_box(north, east, south, west)
+    north, east, south, west = [north, east, south, west].map {|a| a.to_f}
+    (lat <= north) && (lat >= south) && (long >= west) && (long <= east)
+  end
+
 end

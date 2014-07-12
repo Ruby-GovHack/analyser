@@ -16,7 +16,7 @@ Where:
 * ```<vars> = high_max_temp=true (other vars such as low_min_temp, rainfall, max-temp-std-dev etc to be added) ```
 * ```<geo params> = <bounding box> | <site>  ```
 * ```<bounding box> = north=<lat>&east=<long>&south=<lat>&west=<long>  ```
-* ```<site> = site-id=<site id>  ```
+* ```<site> = site=<site id>  ```
 * ```<time params> = start=<time>&end=<time> | time=<time>  ```
 * ```<time> = [[dd-]mm-]yyyy  ```
 
