@@ -15,7 +15,7 @@ describe 'API' do
   end
 
   it 'should return data for a specified month' do
-    get '/v1/timeseries/monthly/acorn-sat?max-temp=true&max-temp-std-dev=true&time=09-2008'
+    get '/v1/timeseries/monthly/acorn-sat?high_max_temp=true&max-temp-std-dev=true&time=09-2008'
     expect(last_response.body).to include('"069018":{"200809":{"month":"09-2008","high_max_temp":29.2')
     expect(last_response.body).to include('"070351":{"200809":{"month":"09-2008","high_max_temp":25.9')
     expect(last_response.body).to include('"072161":{"200809":{"month":"09-2008","high_max_temp":17.5')
@@ -23,7 +23,7 @@ describe 'API' do
   end
 
   it 'should restrict data by geographic area"' do
-    get '/v1/timeseries/monthly/acorn-sat?max-temp=true&max-temp-std-dev=true&time=09-2008&north=-35.0&east=150.0&south=-36.0&west=147.2'
+    get '/v1/timeseries/monthly/acorn-sat?high_max_temp&low_min_temp&time=09-2008&north=-35.0&east=150.0&south=-36.0&west=147.2'
     expect(last_response.body).not_to include('"069018"')
     expect(last_response.body).to include('"070351":{"200809":{"month":"09-2008","high_max_temp":25.9,"low_min_temp":-5.7}}')
     expect(last_response.body).to include('"072161":{"200809":{"month":"09-2008","high_max_temp":17.5,"low_min_temp":-3.9}}')
@@ -32,7 +32,7 @@ describe 'API' do
 
   context 'start time and end time specified' do
     it 'should return monthly time-series data for a site' do
-      get '/v1/timeseries/monthly/acorn-sat?max-temp=true&start=08-2008&end=11-2008&site=072161'
+      get '/v1/timeseries/monthly/acorn-sat?high_max_temp&start=08-2008&end=11-2008&site=072161'
       expect(last_response.body).to include('{"month":"08-2008","high_max_temp":8.2')
       expect(last_response.body).to include('{"month":"09-2008","high_max_temp":17.5')
       expect(last_response.body).to include('{"month":"10-2008","high_max_temp":20.5')
@@ -44,7 +44,7 @@ describe 'API' do
 
   context 'a single time is specified' do
     it 'should return monthly time-series data for a site' do
-      get '/v1/timeseries/monthly/acorn-sat?max-temp=true&time=08-2008&site=072161'
+      get '/v1/timeseries/monthly/acorn-sat?high_max_temp=true&time=08-2008&site=072161'
       expect(last_response.body).to include('{"month":"08-2008","high_max_temp":8.2')
       expect(last_response.body).not_to include('"month":"09-2008"')
       expect(last_response.body).not_to include('"month":"07-2008"')
@@ -53,10 +53,17 @@ describe 'API' do
 
   context 'time is not specified' do
     it 'should return all months for a site' do
-      get '/v1/timeseries/monthly/acorn-sat?max-temp=true&site=072161'
+      get '/v1/timeseries/monthly/acorn-sat?high_max_temp&site=072161'
       expect(last_response.body).to include('{"month":"01-2000","high_max_temp":24.0')
       expect(last_response.body).to include('{"month":"12-2010","high_max_temp":25.2')
     end
   end
 
+  context 'only low min is specified' do
+    it 'should not include other data' do
+      get '/v1/timeseries/monthly/acorn-sat?low_min_temp&site=072161'
+      expect(last_response.body).not_to include('"high_max_temp"')
+      expect(last_response.body).to include('"low_min_temp"')
+    end
+  end
 end

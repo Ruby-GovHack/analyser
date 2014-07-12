@@ -41,27 +41,29 @@ class MonthlyData
   def self.filter_all(site, start_time=nil, end_time=nil)
     start_time ||= '00-0000'
     end_time ||= '99-999999'
-    start_month, start_year = start_time.split('-').map {|a| a.to_i}
-    end_month,   end_year =   end_time.split('-').map {|a| a.to_i}
+    start_month, start_year = start_time.split('-').map { |a| a.to_i }
+    end_month, end_year = end_time.split('-').map { |a| a.to_i }
     result = {}
     MonthlyData.where(
         :site => site,
         :year_month.gte => start_year*100+start_month,
         :year_month.lte => end_year*100+end_month
-    ).order_by(:year_month.asc).each {|d| result[d.year_month] = d}
+    ).order_by(:year_month.asc).each { |d| result[d.year_month] = d }
     result
   end
 
   def self.in_date_range(month, year, start_time, end_time)
-    start_month, start_year = start_time.split('-').map {|a| a.to_i}
-    end_month,   end_year =   end_time.split('-').map {|a| a.to_i}
+    start_month, start_year = start_time.split('-').map { |a| a.to_i }
+    end_month, end_year = end_time.split('-').map { |a| a.to_i }
     (year >= start_year) && (year <= end_year) &&
         (year != start_year || month >= start_month) &&
         (year != end_year || month <= end_month)
   end
 
 
-  def as_json(options = {}, vars=[:month, :high_max_temp, :low_min_temp])
+  def as_json(options = {})
+    options[:vars] ||= ['high_max_temp', 'low_min_temp']
+    options[:vars] << 'month'
     {:month => sprintf("%02d", month) + "-#{year}",
      :year_month => year_month,
      :high_max_temp => high_max_temp,
@@ -75,7 +77,8 @@ class MonthlyData
      :min_lowest_since => min_lowest_since,
      :min_ten_max => min_ten_max,
      :min_ten_min => min_ten_min,
-     :min_moving_mean => min_moving_mean}.select {|k, _| vars.include? k}
+     :min_moving_mean => min_moving_mean}.select { |k, _|
+      options[:vars] && (options[:vars].include? k.to_s) }
 
   end
 
