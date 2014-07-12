@@ -16,7 +16,7 @@ RSpec.configure do |conf|
 
     DatabaseCleaner[:mongoid].strategy = :truncation
     DatabaseCleaner[:mongoid].clean_with(:truncation)
-    require_relative '../db/seeds'
+    require_relative '../db/test_seeds'
   end
 
  end

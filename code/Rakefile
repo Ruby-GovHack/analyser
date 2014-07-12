@@ -15,6 +15,11 @@ namespace :db do
   task :seed => :environment do
     require_relative 'db/seeds'
   end
+
+  desc "Test Seed"
+  task :test_seed => :environment do
+    require_relative 'db/test_seeds'
+  end
 end
 
 desc "Run those specs"
