@@ -49,7 +49,7 @@ class App < Sinatra::Application
   end
 
   def data_by_bounding_box(north, east, south, west, start_time, end_time)
-    provider = DataProvider.new(provider_details(params[:dataset]))
+    provider = DataProvider.new(params[:dataset])
     sites = Site.fetch(provider).select {|_,s| s.in_bounding_box(north, east, south, west)}
     result = {}
     sites.each {|site,_| result[site] = MonthlyData.fetch(provider, site, start_time, end_time)}
