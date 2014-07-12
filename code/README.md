@@ -2,7 +2,7 @@ RubyGovHackers API
 ============================
 
 The API
--------
+------- 
 ```
 GET <root>/<version>/<resource>/[<subresource>/]<dataset>?[<vars>]&[<geo params>]&[<time params>] 
 ```
