@@ -1,8 +1,8 @@
 class DataProvider
 
-  def initialize(endpoint, base)
-    @sparql = SPARQL::Client.new(endpoint)
-    @site_uri = RDF::URI(base)
+  def initialize(details)
+    @sparql = SPARQL::Client.new(details[:endpoint])
+    @site_uri = RDF::URI(details[:site_uri])
   end
 
   def fetch(vars, patterns)
