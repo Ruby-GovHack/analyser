@@ -26,7 +26,7 @@ describe 'API' do
     expect(last_response.body).to include('{"month":"09-2008","high_max_temp":17.5}')
     expect(last_response.body).to include('{"month":"10-2008","high_max_temp":20.5}')
     expect(last_response.body).to include('{"month":"11-2008","high_max_temp":21.4}')
-    #expect(last_response.body).not_to include('"month":"12-2008"')
+    expect(last_response.body).not_to include('"month":"12-2008"')
   end
 
 end

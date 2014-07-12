@@ -26,7 +26,7 @@ class MonthlyData
     site_uri.to_s.split('/').last
   end
 
-  def self.fetch(provider, site_id)
+  def self.fetch(provider, site_id, start_month='00-0000', end_month='99-999999')
     time_series = 'http://lab.environment.data.gov.au/def/acorn/time-series/'
     acorn_sat   = 'http://lab.environment.data.gov.au/def/acorn/sat/'
 
@@ -45,9 +45,18 @@ class MonthlyData
         [:yearmonth, max_temp,   :max]
     ]
 
-    provider.fetch(vars, patterns).map do |solution|
-      MonthlyData.create_from_solution!(solution)
+    start_month, start_year = start_month.split('-').map {|a| a.to_i}
+      end_month,   end_year =   end_month.split('-').map {|a| a.to_i}
+    result = []
+    provider.fetch(vars, patterns).each do |solution|
+      year = id_from_uri(solution[:year]).to_i
+      month = id_from_uri(solution[:month]).to_i
+      result << MonthlyData.create_from_solution!(solution) unless
+          (year < start_year) || (year > end_year) ||
+          (year == start_year && month < start_month) ||
+          (year == end_year && month > end_month)
     end
+    result
   end
 
 
