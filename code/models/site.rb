@@ -11,6 +11,8 @@ class Site
   field :lat, type: Float
   field :long, type: Float
 
+  has_many :monthlyDatas
+
   def self.create_from_solution!(solution)
     Site.create!(
         site_id: id_from_uri(solution[:site]),

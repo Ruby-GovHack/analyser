@@ -6,8 +6,19 @@ class MonthlyData
   field :year, type: Integer
   field :month, type: Integer
   field :high_max_temp, type: Float
-  has_one :site
-  index({ site: 1, year: 1, month: 1 }, { unique: true })
+  field :low_min_temp, type: Float
+  field :max_highest_since, type: Integer
+  field :max_lowest_since, type: Integer
+  field :max_ten_max, type: Float
+  field :max_ten_min, type: Float
+  field :max_moving_mean, type: Float
+  field :min_highest_since, type: Integer
+  field :min_lowest_since, type: Integer
+  field :min_ten_max, type: Float
+  field :min_ten_min, type: Float
+  field :min_moving_mean, type: Float
+  belongs_to :site
+  #index({ site: 1, year: 1, month: 1 }, { unique: true })
 
   def self.create_from_solution!(solution)
     MonthlyData.create!(
