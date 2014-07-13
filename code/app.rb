@@ -34,6 +34,12 @@ class App < Sinatra::Application
     Seeds.new.seed_all
   end
 
+  post '/reseed' do
+    seeder = Seeds.new
+    seeder.drop
+    seeder.seed_all
+  end
+
   def get_start
     return params[:time] if params[:time]
     params[:start]

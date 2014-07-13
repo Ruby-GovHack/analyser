@@ -2,6 +2,7 @@ require 'rdf'
 require 'linkeddata'
 require 'sparql/client'
 require 'json'
+require 'mongoid'
 
 class Site
   include Mongoid::Document

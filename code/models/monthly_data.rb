@@ -1,4 +1,5 @@
 require 'json'
+require 'mongoid'
 
 class MonthlyData
   include Mongoid::Document

@@ -23,4 +23,10 @@ class Seeds
     DataAnalyser.fetch(@provider, 4, "01-2000", "01-2011", 1-35.0, 150.5, -36.0, 147.2)
     "New monthly data count: #{MonthlyData.count}"
   end
+
+  def drop
+    Site.delete_all
+    MonthlyData.delete_all
+  end
+
 end

@@ -8,8 +8,7 @@ end
 namespace :db do
   desc "Drop db data"
   task :drop => :environment do
-    Site.destroy_all
-    MonthlyData.destroy_all
+    Seeds.new.drop
   end
 
   desc "Seed db data"
