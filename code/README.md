@@ -22,18 +22,18 @@ Where:
 
 Available vars:
 
-* ```high_max_temp     ``` :
-* ```low_min_temp      ``` :
-* ```max_highest_since ``` :
-* ```max_lowest_since  ``` :
-* ```max_ten_max       ``` :
-* ```max_ten_min       ``` :
-* ```max_moving_mean   ``` :
-* ```min_highest_since ``` :
-* ```min_lowest_since  ``` :
-* ```min_ten_max       ``` :
-* ```min_ten_min       ``` :
-* ```min_moving_mean   ``` :
+* ```high_max_temp     ``` : The maximum temperature during the specified month for the specified year.
+* ```low_min_temp      ``` : The minimum temperature during the specified month for the specified year.
+* ```max_highest_since ``` : The most recent year where the maximum temperature was greater than or equal to the maximum temperature during the specified month during the specified year. For example, June 1994 may have had the highest maximum temperature since June 1972.
+* ```max_lowest_since  ``` : The most recent year where the maximum temperature was less than or equal to the maximum temperature during the specified month during the specified year. For example, June 1994 may have had the lowest maximum temperature since June 1972.
+* ```max_ten_max       ``` : The highest maximum temperature during this month for the past ten years.
+* ```max_ten_min       ``` : The lowest maximum temperature during this month for the past ten years.
+* ```max_moving_mean   ``` : The moving mean of the maximum temperatures for this month over the past ten years.
+* ```min_highest_since ``` : The most recent year where the minimum temperature was greater than or equal to the minimum temperature during the specified month during the specified year. For example, June 1994 may have had the highest minimum temperature since June 1972.
+* ```min_lowest_since  ``` : The most recent year where the minimum temperature was less than or equal to the minimum temperature during the specified month during the specified year. For example, June 1994 may have had the lowest minimum temperature since June 1972.
+* ```min_ten_max       ``` : The highest minimum temperature during this month for the past ten years.
+* ```min_ten_min       ``` : The lowest minimum temperature during this month for the past ten years.
+* ```min_moving_mean   ``` : The moving mean of the minimum temperatures for this month over the past ten years.
 
 The Stack
 -------
