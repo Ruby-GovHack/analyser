@@ -72,10 +72,7 @@ class App < Sinatra::Application
   end
 
   def data_for_all_locations(start_time, end_time)
-    provider = SparqlDataProvider.new(params[:dataset])
-    result = {}
-    Site.all.each {|site,_| result[site.site_id] = MonthlyData.filter_all(site, start_time, end_time)}
-    result.to_json(options = {:vars=>params.keys})
+    MonthlyData.filter_all_by_date(start_time, end_time).to_json(options = {:vars=>params.keys})
   end
 
   # FIXME replace with rack-cors

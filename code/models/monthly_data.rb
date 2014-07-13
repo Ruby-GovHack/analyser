@@ -53,6 +53,21 @@ class MonthlyData
     result
   end
 
+  def self.filter_all_by_date(start_time=nil, end_time=nil)
+    start_time ||= '00-0000'
+    end_time ||= '99-999999'
+    start_month, start_year = start_time.split('-').map { |a| a.to_i }
+    end_month, end_year = end_time.split('-').map { |a| a.to_i }
+    result = {}
+    MonthlyData.where(
+        :year_month.gte => start_year*100+start_month,
+        :year_month.lte => end_year*100+end_month
+    ).order_by(:year_month.asc).each { |d|
+      result[d.site.site_id] ||= {}
+      result[d.site.site_id][d.year_month] = d}
+    result
+  end
+
   def self.in_date_range(month, year, start_time, end_time)
     start_month, start_year = start_time.split('-').map { |a| a.to_i }
     end_month, end_year = end_time.split('-').map { |a| a.to_i }
