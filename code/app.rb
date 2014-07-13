@@ -61,18 +61,25 @@ class App < Sinatra::Application
 
   def data_by_site(site_id, start_time, end_time)
     site = Site.all_as_hash[site_id]
-    MonthlyData.filter_all(site, start_time, end_time).to_json(options = {:vars=>params.keys})
+    MonthlyData.filter_all(site, start_time, end_time).as_json(options = {:vars => params.keys}).reduce(Hash.new, :merge).to_json
   end
 
   def data_by_bounding_box(north, east, south, west, start_time, end_time)
     sites = Site.all.select {|s| s.in_bounding_box(north, east, south, west)}
-    result = {}
-    sites.each {|site,_| result[site.site_id] = MonthlyData.filter_all(site, start_time, end_time)}
-    result.to_json(options = {:vars=>params.keys})
+    result = []
+    sites.each {|site,_| result <<
+        {site.site_id =>
+             MonthlyData.filter_all(site, start_time, end_time).as_json(options = {:vars => params.keys}).reduce(Hash.new, :merge)}}
+    result.reduce(Hash.new, :merge).to_json
   end
 
   def data_for_all_locations(start_time, end_time)
-    MonthlyData.filter_all_by_date(start_time, end_time).to_json(options = {:vars=>params.keys})
+    result = []
+    Site.all.each {|site,_| result <<
+        {site.site_id =>
+             MonthlyData.filter_all(site, start_time, end_time).as_json(options = {:vars => params.keys}).reduce(Hash.new, :merge)}}
+    result.reduce(Hash.new, :merge).to_json
+    #MonthlyData.filter_all_by_date(start_time, end_time).to_json(options = {:vars=>params.keys})
   end
 
   # FIXME replace with rack-cors

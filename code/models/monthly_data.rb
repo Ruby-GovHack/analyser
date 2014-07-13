@@ -19,8 +19,8 @@ class MonthlyData
   field :min_ten_max, type: Float
   field :min_ten_min, type: Float
   field :min_moving_mean, type: Float
-  belongs_to :site
-  #index({ site: 1, year: 1, month: 1 }, { unique: true })
+  belongs_to :site, index: true
+  index({year_month: 1})
 
   def self.create_from_solution!(solution)
     MonthlyData.create!(
@@ -49,8 +49,7 @@ class MonthlyData
         :site => site,
         :year_month.gte => start_year*100+start_month,
         :year_month.lte => end_year*100+end_month
-    ).order_by(:year_month.asc).each { |d| result[d.year_month] = d }
-    result
+    ).order_by(:year_month.asc).to_a
   end
 
   def self.filter_all_by_date(start_time=nil, end_time=nil)
@@ -58,14 +57,10 @@ class MonthlyData
     end_time ||= '99-999999'
     start_month, start_year = start_time.split('-').map { |a| a.to_i }
     end_month, end_year = end_time.split('-').map { |a| a.to_i }
-    result = {}
     MonthlyData.where(
         :year_month.gte => start_year*100+start_month,
         :year_month.lte => end_year*100+end_month
-    ).order_by(:year_month.asc).each { |d|
-      result[d.site.site_id] ||= {}
-      result[d.site.site_id][d.year_month] = d}
-    result
+    ).order_by(:year_month.asc).to_a
   end
 
   def self.in_date_range(month, year, start_time, end_time)
@@ -76,12 +71,11 @@ class MonthlyData
         (year != end_year || month <= end_month)
   end
 
-
   def as_json(options = {})
     options[:vars] ||= ['high_max_temp', 'low_min_temp']
     options[:vars] << 'month'
-    {:month => sprintf("%02d", month) + "-#{year}",
-     :year_month => year_month,
+    {#:month => sprintf("%02d", month) + "-#{year}",
+     year_month => {
      :high_max_temp => high_max_temp,
      :low_min_temp => low_min_temp,
      :max_highest_since => max_highest_since,
@@ -94,8 +88,7 @@ class MonthlyData
      :min_ten_max => min_ten_max,
      :min_ten_min => min_ten_min,
      :min_moving_mean => min_moving_mean}.select { |k, _|
-      options[:vars] && (options[:vars].include? k.to_s) }
-
+      options[:vars] && (options[:vars].include? k.to_s) }}
   end
 
 end
