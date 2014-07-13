@@ -18,7 +18,7 @@ build-dev-nocache:
 	rm "${BUILD_DIR}/Dockerfile"
 
 run:
-	docker run -i -t --rm --name="${CONTAINER_NAME_DEV}" --hostname="${CONTAINER_NAME_DEV}" -v "${BUILD_DIR}/code:/code" -p 5556:5556 ${IMAGE_NAME_DEV}
+	docker run -i -t --rm --name="${CONTAINER_NAME_DEV}" --hostname="${CONTAINER_NAME_DEV}" -v "${BUILD_DIR}/code:/code" -v "${BUILD_DIR}/docker/dev/mongodb:/var/lib/mongodb" -p 5556:5556 ${IMAGE_NAME_DEV}
 
 rebuildandrun: build-dev run
 
@@ -33,7 +33,7 @@ build-prod-nocache:
 	rm "${BUILD_DIR}/Dockerfile"
 
 serve:
-	docker run -d --name="${CONTAINER_NAME_PROD}" --hostname="${CONTAINER_NAME_PROD}" -p 80:5556 ${IMAGE_NAME_PROD}
+	docker run -d --name="${CONTAINER_NAME_PROD}" --hostname="${CONTAINER_NAME_PROD}" -v "${BUILD_DIR}/docker/prod/mongodb:/var/lib/mongodb" -p 80:5556 ${IMAGE_NAME_PROD}
 
 ssh:
 	ssh -i "${BUILD_DIR}/docker/prod/${CONTAINER_NAME_PROD}.key" root@$(shell docker inspect --format="{{ .NetworkSettings.IPAddress }}" ${CONTAINER_NAME_PROD})
