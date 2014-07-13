@@ -181,14 +181,6 @@ class DataAnalyser
       yearsRollMin[year] = rolling_extremity(year, years, SPACESHIP_LESS, YEARS_LOOK_BACK)
     end
 
-    yearsHighestSince.each do |key, datapoint|
-      puts "#{key}: #{years[key]}, highest since #{datapoint}, ten year max of #{yearsRollMax[key]}"
-    end
-
-    yearsLowestSince.each do |key, datapoint|
-      puts "#{key}: #{years[key]}, lowest since #{datapoint}, ten year min of max of #{yearsRollMin[key]}"
-    end
-
     {:highestsince => yearsHighestSince, :lowestsince => yearsLowestSince, :rollmax => yearsRollMax, :rollmin => yearsRollMin}
   end
 
