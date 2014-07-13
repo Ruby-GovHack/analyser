@@ -21,18 +21,19 @@ Where:
 * ```<time> = [[dd-]mm-]yyyy  ```
 
 Available vars:
-* high_max_temp     :
-* low_min_temp      :
-* max_highest_since :
-* max_lowest_since  :
-* max_ten_max       :
-* max_ten_min       :
-* max_moving_mean   :
-* min_highest_since :
-* min_lowest_since  :
-* min_ten_max       :
-* min_ten_min       :
-* min_moving_mean   :
+
+* ```high_max_temp     ``` :
+* ```low_min_temp      ``` :
+* ```max_highest_since ``` :
+* ```max_lowest_since  ``` :
+* ```max_ten_max       ``` :
+* ```max_ten_min       ``` :
+* ```max_moving_mean   ``` :
+* ```min_highest_since ``` :
+* ```min_lowest_since  ``` :
+* ```min_ten_max       ``` :
+* ```min_ten_min       ``` :
+* ```min_moving_mean   ``` :
 
 The Stack
 -------
